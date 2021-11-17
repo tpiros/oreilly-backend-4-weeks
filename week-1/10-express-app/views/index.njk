@@ -1,0 +1,10 @@
+{% extends "default.njk" %}
+{% block content %}
+  <h1>{{ title }}</h1>
+  <p>Some content ...</p>
+  <ul>
+    {% for product in products %}
+      <li>{{ product.name }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
