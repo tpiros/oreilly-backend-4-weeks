@@ -1,0 +1,3 @@
+(MySQL) Workbench: https://dev.mysql.com/downloads/workbench/
+
+MongoDB Compass: https://www.mongodb.com/products/compass

@@ -1,0 +1,217 @@
+show dbs;
+show collections;
+
+db.listingsAndReviews.find({ "_id": "10051164" }).pretty();
+
+db.employees.find({ "_id" : ObjectId("5bf70748ca5930f0e3cd157e") }).pretty();
+
+db.createCollection('employees');
+db.employees.insert({
+  name: 'John', salary: 15000
+});
+
+db.employees.insertMany([
+  { name: 'John', salary: 15000 },
+  { name: 'Susan', salary: 14000 }
+]);
+
+db.employees.find({});
+
+db.employees.find( { name: 'John' });
+
+db.employees.find({ 'department.name': 'HR' });
+db.employees.find({ 'department.name': 'HR' }).count(); // same as: db.employees.count({ 'department.name': 'HR' });
+
+db.employees.find({
+  $and: [
+    { 'department.name': 'HR' },
+    { salary: { $gt: 110000 }}
+  ]
+});
+
+db.employees.find({
+  $or: [
+    { 'department.name': 'HR' },
+    { 'department.name': 'Finance' }
+  ]
+});
+
+db.employees.find({}, { name: 1 });
+db.employees.find({}, { name: 1, _id: 0 });
+
+db.employees.find({ salary: { $gt: 119000 } }, { name: 1, salary: 1, _id: 0 });
+db.employees.find({ salary: { $gt: 119000 } }, { name: 1, salary: 1, _id: 0 }).sort({ salary: 1 });
+db.employees.find({ salary: { $gt: 119000 } }, { name: 1, salary: 1, _id: 0 }).sort({ salary: -1 });
+
+db.employees.insert({
+  name: 'John', salary: 15000
+});
+
+db.employees.find({}).sort({ _id:-1 }).limit(1).pretty();
+
+// replace entire document
+db.employees.update({ _id: id }, { name: 'Adam'} );
+
+// set part of the document (update specific fields)
+db.employees.update({ _id: id }, { $set: { name: 'Steve' } });
+
+// update, otherwise insert if doesn't exist
+db.employees.update(
+   { name: 'Kate' },
+   {
+     name: 'Kate',
+     salary: 24000
+   },
+   { upsert: true }
+);
+
+// update by matching query
+db.employees.update(
+   { 'department.name': 'Evangelism' },
+   { $set: { salary: 50000 } },
+   { multi: true }
+);
+
+db.employees.update(
+  { salary: { $eq: 50000 }},
+  { $set: { salary: 60000 }},
+  { multi: true}
+);
+
+db.employees.update(
+   { salary: { $eq: 24000 } },
+   { $set: { name: 'Jack' } },
+   { multi: true }
+);
+
+
+db.employees.aggregate([{ $group: { _id: "$department.name", salary: { $avg: "$salary" } }}]);
+
+db.employees.aggregate([
+  { $group: { _id: "$department.name", avgSalary: { $avg: "$salary" } } },
+  { $project: {
+    _id: '$_id',
+    average: '$avgSalary',
+    roundedAvg: { $ceil: '$avgSalary' }
+  }
+}]);
+
+db.employees.aggregate([{ $group: { _id: "$department.name", salary: { $min: "$salary" } }}]);
+
+db.employees.aggregate([
+  { $group: { _id: "$department.name", salary: { $round: { $avg: "$salary" } } },
+}]);
+
+db.orders.aggregate([
+{
+    $group: {
+      _id: null,
+      total: {
+        $sum: "$amount"
+      }
+    }
+  }
+])
+
+db.orders.aggregate([
+  {
+    $match: {
+      date: {
+        $gte: '2019-08-01',
+        $lt: '2019-08-31'
+      }
+    }
+  }, {
+    $group: {
+      _id: null,
+      total: {
+        $sum: "$amount"
+      }
+    }
+  }
+])
+
+db.orders.aggregate([
+  {
+    $match: {
+      date: {
+        $gte: '2019-08-01',
+        $lt: '2019-08-31'
+      }
+    }
+  }, {
+    $group: {
+      _id: null,
+      total: {
+        $sum: "$amount"
+      },
+      avg_amount: {
+        $avg: "$amount"
+      },
+      min_amount: {
+        $min: "$amount"
+      },
+      max_amount: {
+        $max: "$amount"
+      }
+    }
+  }
+])
+
+db.books.aggregate([
+  { $match: { author: 'Carmelia Haggis' } },
+  { $group: { _id: '$author', pages: { $sum: "$pages" } } },
+  { $project: {
+      _id: '$_id',
+      author: '$author',
+      pages: '$pages'
+    }
+  }
+])
+
+db.books.aggregate([
+  {
+    $group: {
+      _id: "$author",
+      books: {
+        $sum: 1
+      }
+    }
+  }, 
+  {
+    $sort: { books: -1 }
+  }
+])
+
+
+db.employees.find({ $text: { $search: "London" }} )
+
+db.employees.createIndex( { "department.location": "text" })
+
+db.fruit.insertMany([
+   { name: "apple", qty: 100, price: 80 },
+   { name: "pear", qty: 100, price: 20 },
+   { name: "grape", qty: 250, price: 30 }
+])
+
+//aggregate matching
+db.fruit.aggregate([ { $match: { price: 80 } }]).pretty();
+
+db.fruit.aggregate([
+  { $group: { _id: "$qty", same_quantity: { $sum: 1 }}}
+])
+
+db.stores.createIndex( { "description": "text" })
+
+db.stores.find( { $text: { $search: "coffee" } } )
+db.stores.find( { $text: { $search: "coffee", $caseSensitive: true } } )
+
+db.stores.createIndex( { "name": "text", "description": "text" })
+db.stores.find( { $text: { $search: "java shop -coffee" } } )
+
+db.stores.find(
+   { $text: { $search: "coffee" } },
+   { score: { $meta: "textScore" } }
+);
+
+db.listingsAndReviews.find({ price: { $gt: 200, $lt: 300 }}, { bed_type: "Real Bed", price: 1 }).sort({ price: -1}).pretty();
