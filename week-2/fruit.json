@@ -1,0 +1,3 @@
+{"_id":{"$oid":"5db89cd5832136de7458719c"},"name":"apple","qty":100.0,"price":80.0}
+{"_id":{"$oid":"5db89cd5832136de7458719d"},"name":"pear","qty":100.0,"price":20.0}
+{"_id":{"$oid":"5db89cd5832136de7458719e"},"name":"grape","qty":250.0,"price":30.0}
