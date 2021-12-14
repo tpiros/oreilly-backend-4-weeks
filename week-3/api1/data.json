@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "fname": "Robert",
+    "lname": "Teodori",
+    "age": 25
+  },
+  {
+    "id": 2,
+    "fname": "Marlin",
+    "lname": "Laugherane",
+    "age": 57
+  },
+  {
+    "id": 3,
+    "fname": "Chris",
+    "lname": "Dingle",
+    "age": 59
+  },
+  {
+    "id": 4,
+    "fname": "Otha",
+    "lname": "Rosewell",
+    "age": 53
+  },
+  {
+    "id": 5,
+    "fname": "Oralia",
+    "lname": "Birchill",
+    "age": 49
+  },
+  {
+    "id": 6,
+    "fname": "Judith",
+    "lname": "Woodyer",
+    "age": 40
+  },
+  {
+    "id": 7,
+    "fname": "Ora",
+    "lname": "Cella",
+    "age": 52
+  },
+  {
+    "id": 8,
+    "fname": "Ronna",
+    "lname": "Girardot",
+    "age": 51
+  },
+  {
+    "id": 9,
+    "fname": "Goldi",
+    "lname": "McCabe",
+    "age": 61
+  },
+  {
+    "id": 10,
+    "fname": "Papageno",
+    "lname": "Nockles",
+    "age": 21
+  }
+]
