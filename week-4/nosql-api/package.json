@@ -1,0 +1,19 @@
+{
+  "name": "nosql-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "fastify": "^3.24.1",
+    "fastify-mongodb": "^4.1.1",
+    "middie": "^5.3.0",
+    "pino-pretty": "^7.3.0"
+  }
+}

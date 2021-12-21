@@ -4,3 +4,5 @@ node_modules/
 emsdk/
 *.log
 .DS_Store
+.serverless
+.cache
