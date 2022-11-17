@@ -1,6 +1,5 @@
-import IProduct from './iproduct.ts';
 import { products } from './data.ts';
-
+import IProduct from './iproduct.ts';
 const displayProducts = ({ response }: { response: any }) => {
   response.body = products;
 };
@@ -12,14 +11,9 @@ const displayProduct = ({
   params: { name: string };
   response: any;
 }) => {
-  const product = products.filter((product) => product.name === params.name);
-  if (products.length) {
-    response.status = 200;
-    response.body = product[0];
-    return;
-  }
-  response.status = 400;
-  response.body = { data: `Product ${params.name} cannot be found.` };
+  const [product] = products.filter((product) => product.name === params.name);
+  response.status = 200;
+  response.body = product;
 };
 
 const addProduct = async ({
@@ -29,10 +23,10 @@ const addProduct = async ({
   request: any;
   response: any;
 }) => {
-  const body = await request.body();
-  const product: IProduct = body.value;
+  const sentObject = await request.body();
+  const product: IProduct = await sentObject.value;
   products.push(product);
-  response.status = 200;
+  response.status = 201;
   response.body = { data: 'Product added' };
 };
 

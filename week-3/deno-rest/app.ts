@@ -1,10 +1,9 @@
-import { Application, Router } from 'https://deno.land/x/oak/mod.ts';
-
+import { Application, Router } from 'https://deno.land/x/oak@v11.1.0/mod.ts';
 import {
   displayProducts,
   displayProduct,
-  updateProduct,
   addProduct,
+  updateProduct,
   deleteProduct,
 } from './routes.ts';
 
@@ -21,10 +20,8 @@ router.put('/products/:name', updateProduct);
 router.delete('/products/:name', deleteProduct);
 
 const app = new Application();
-
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-console.log(`Rest API running on port ${PORT} 🚀`);
-
+console.log(`REST API running on port ${PORT}`);
 await app.listen(`${HOST}:${PORT}`);

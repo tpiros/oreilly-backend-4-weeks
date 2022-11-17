@@ -1,81 +1,119 @@
 let data = require('./data.json');
 
-// GET
+/*
+  Rate limiting
+  - register to use the API -> API KEY
+  - API limiting per hour, per day, per week
+*/
+const apiKeyList = ['123', '456']; // -> belong to a registered user
+let apiRateLimit = 10;
 const displayAll = (req, res) => {
-  if (!data) {
-    return res.status(200).json([]);
+  if (req.headers['x-api-key']) {
+    const apiKey = req.headers['x-api-key'];
+    if (apiKeyList.includes(apiKey)) {
+      apiRateLimit--;
+      if (apiRateLimit <= 0) {
+        return res.json('Number of daily API requests reached');
+      }
+      return res.json({ data, remainingNumberOfRequests: apiRateLimit });
+    } else {
+      return res.json('Invalid API key');
+    }
+  } else {
+    return res.json('Please use API key');
   }
-  return res.status(200).json(data);
 };
-// GET
+
+// const displayAll = (req, res) => {
+//   if (req.headers['x-version']) {
+//     const version = req.headers['x-version'];
+//     if (version === 'version-2') {
+//       return res.json({ data, requestedAt: Date.now() });
+//     }
+//   }
+//   if (!data) {
+//     return res.status(200).json([]);
+//   }
+//   return res.json(data);
+// };
+
 const displayOne = (req, res) => {
   const { id } = req.params;
-  const response = data.filter((d) => d.id === parseInt(id, 10));
-  if (response.length === 0) {
-    return res.status(404).json(`Person with id: ${id} cannot be found.`);
+  let [response] = data.filter((d) => d.id === parseInt(id, 10));
+  if (!response) {
+    res.header({ 'Content-Type': 'text/plain' });
+    return res.status(404).send(`Person with id: ${id} cannot be found.`);
   }
-  return res.status(200).json(response[0]);
-};
-// POST
-const addPerson = (req, res) => {
-  console.log(req.body);
-  const { person } = req.body;
-  if (person && person.constructor === Object) {
-    data.push(person);
-    return res.status(201).json(`Successfully added new person`);
+  if (req.query && req.query.version) {
+    const { version } = req.query;
+    if (version === 'v2') {
+      return res.json({ response, requestedAt: Date.now() });
+    }
   } else {
-    return res
-      .status(400)
-      .json(
-        `Person must be a valid object, provided: ${JSON.stringify(req.body)}`
-      );
+    return res.json(response);
   }
 };
-// PUT
+
+const addPerson = (req, res) => {
+  const payload = req.body;
+  if (payload) {
+    data.push(payload);
+    res.header({ 'Content-Type': 'text/plain' });
+    return res.status(201).send('Success!');
+  } else {
+    //
+  }
+  return res.json();
+};
+
 const fullUpdatePerson = (req, res) => {
   const { id } = req.params;
-  const { person } = req.body;
-  const personToUpdate = data.filter((d) => d.id === parseInt(id, 10))[0];
-  const personIndex = data.findIndex((d) => d.fname === personToUpdate.fname);
+  const payload = req.body;
+  const [personToUpdate] = data.filter((d) => d.id === parseInt(id, 10));
 
   if (!personToUpdate) {
-    data.push(person);
-    return res.status(201).json(`Successfully added new person`);
+    data.push(payload);
+    res.header({ 'Content-Type': 'text/plain' });
+    return res.status(201).send('Success!');
   } else {
-    data[personIndex] = person;
-    return res.status(204).json(`Successfully updated person at id: ${id}`);
+    const personIndex = data.findIndex((d) => d.fname === personToUpdate.fname);
+    data[personIndex] = payload;
+    return res.status(204).end();
   }
 };
-// PATCH
+
 const partialUpdatePerson = (req, res) => {
   const { id } = req.params;
-  const personToUpdate = data.filter((d) => d.id === parseInt(id, 10))[0];
-  const personIndex = data.findIndex((d) => d.fname === personToUpdate.fname);
-
+  const [personToUpdate] = data.filter((d) => d.id === parseInt(id, 10));
   if (!personToUpdate) {
-    return res.status(400).json(`Cannot find users with id ${id}`);
+    res.header({ 'Content-Type': 'text/plain' });
+    return res.status(404).send(`Cannot find user with id: ${id}`);
   } else {
-    const { person } = req.body;
-
+    const payload = req.body;
     if (
       Object.keys(personToUpdate).some((key) =>
-        Object.keys(person).includes(key)
+        Object.keys(payload).includes(key)
       )
     ) {
-      data[personIndex] = Object.assign(personToUpdate, person);
-      return res.status(204).send(`Success`);
+      const personIndex = data.findIndex(
+        (d) => d.fname === personToUpdate.fname
+      );
+      data[personIndex] = Object.assign(personToUpdate, payload);
+      return res.status(204).end();
     } else {
+      // do appendt the property to personToUpdate
+      res.header({ 'Content-Type': 'text/plain' });
       return res
-        .status(400)
-        .json(`Some of the properties do not match "${Object.keys(person)}"`);
+        .status(500)
+        .send(`Some of the properties do not match: "${Object.keys(payload)}"`);
     }
   }
 };
-// DELETE
+
 const deletePerson = (req, res) => {
   const { id } = req.params;
   data = data.filter((d) => d.id !== parseInt(id, 10));
-  return res.status(204).json(`Success, ${id} deleted`);
+  return res.status(204).end();
 };
 
 module.exports = {

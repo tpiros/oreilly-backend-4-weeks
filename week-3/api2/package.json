@@ -1,16 +1,16 @@
 {
-  "dependencies": {
-    "fastify": "^3.24.1"
-  },
-  "name": "api2",
+  "name": "live2",
   "version": "1.0.0",
-  "main": "app.js",
-  "devDependencies": {},
+  "description": "",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "fastify": "^4.10.0"
+  },
   "type": "module"
 }
