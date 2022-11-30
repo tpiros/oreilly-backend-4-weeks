@@ -10,12 +10,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.0.1",
-    "dotenv": "^10.0.0",
-    "fastify": "^3.24.1",
-    "fastify-mongodb": "^4.1.1",
+    "@fastify/mongodb": "^5.0.0",
+    "bcrypt": "^5.1.0",
+    "dotenv": "^16.0.3",
+    "fastify": "^4.10.2",
     "jsonwebtoken": "^8.5.1",
-    "middie": "^5.3.0",
-    "mongodb": "^4.2.2"
+    "middie": "^7.1.0",
+    "mongodb": "^4.12.1",
+    "pino-pretty": "^9.1.1"
   }
 }

@@ -2,7 +2,7 @@ import { MongoClient } from 'mongodb';
 
 const client = new MongoClient('mongodb://localhost:27017');
 client.connect();
-const db = client.db('project');
+const db = client.db('rest-api');
 const employees = db.collection('employees');
 
 const resolvers = {

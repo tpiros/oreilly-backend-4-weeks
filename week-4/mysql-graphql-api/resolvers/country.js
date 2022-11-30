@@ -1,5 +1,5 @@
-const fetch = (...args) =>
-  import('node-fetch').then(({ default: fetch }) => fetch(...args));
+// const fetch = (...args) =>
+//   import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const base = `http://localhost:3000/api`;
 module.exports = {
   Query: {

@@ -1,0 +1,21 @@
+service: aws-node-http-api-project
+frameworkVersion: '2 || 3'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: '20201221'
+  environment:
+    UNSPLASH_API_KEY: ''
+    CLOUDINARY_API_KEY: ''
+    CLOUDINARY_API_SECRET: ''
+    CLOUDINARY_CLOUD_NAME: ''
+
+functions:
+  image:
+    handler: handler.image
+    events:
+      - http:
+          path: image
+          method: get
+          cors: true

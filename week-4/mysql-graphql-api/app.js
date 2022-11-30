@@ -20,6 +20,7 @@ const init = async () => {
     typeDefs,
     resolvers,
     plugins: [ApolloServerPluginStopHapiServer({ hapiServer: app })],
+    graphiql: true,
   });
 
   app.route({

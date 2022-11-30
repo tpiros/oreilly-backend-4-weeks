@@ -4,7 +4,7 @@ const {
 } = require('../controllers/departments');
 const { authenticate } = require('../middlewares/auth');
 
-async function routes(fastify, options) {
+async function routes(fastify) {
   fastify.get('/departments', { preHandler: authenticate }, listDepartments);
   fastify.get(
     '/departments/:deptName/employees',

@@ -29,7 +29,7 @@ const root = {
 app.use(
   '/graphql',
   graphqlHTTP({
-    schema: schema,
+    schema,
     rootValue: root,
     graphiql: true,
   })

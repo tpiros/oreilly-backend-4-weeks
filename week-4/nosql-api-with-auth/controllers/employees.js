@@ -1,42 +1,42 @@
-const ObjectId = require('mongodb').ObjectId;
+const { ObjectId } = require('@fastify/mongodb');
 
-async function listEmployees(req, reply) {
+async function listEmployees(request, reply) {
   const employeesCollection = this.mongo.db.collection('employees');
   const result = await employeesCollection.find({}).toArray();
   return reply.send(result);
 }
 
-async function listOneEmployee(req, reply) {
+async function listOneEmployee(request, reply) {
   const employeesCollection = this.mongo.db.collection('employees');
   const result = await employeesCollection.findOne({
-    _id: new ObjectId(req.params.id),
+    _id: request.ObjectId,
   });
   if (result) {
     return reply.send(result);
   }
-  return reply.code(500).send({ message: 'Employee not found' });
+  return reply.code(404).send({ message: 'Employee not found' });
 }
 
-async function createEmployee(req, reply) {
+async function createEmployee(request, reply) {
   const employeesCollection = this.mongo.db.collection('employees');
-  const employee = req.body;
+  const employee = request.body;
   try {
     await employeesCollection.insertOne(employee);
-    reply.code(201).send({ message: 'Employee successfully inserted' });
+    return reply.code(201).send({ message: 'Employee created ' });
   } catch (error) {
     return reply.send(error);
   }
 }
 
-async function updateEmployee(req, reply) {
+async function updateEmployee(request, reply) {
   const employeesCollection = this.mongo.db.collection('employees');
-  const employee = req.body;
+  const employee = request.body;
   if (employee) {
     try {
       await employeesCollection.updateOne(
-        { _id: req.ObjectId },
+        { _id: request.ObjectId },
         { $set: employee }
-      ); // $set in MongoDB will do a partial document update
+      );
       return reply.code(204).send();
     } catch (error) {
       return reply.send(error);

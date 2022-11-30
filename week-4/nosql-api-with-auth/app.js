@@ -1,21 +1,33 @@
-const fastify = require('fastify')({ logger: true });
-const dotenv = require('dotenv');
-const convertToObjectId = require('./middlewares/convertToObjectId');
-
-dotenv.config();
-
-fastify.register(require('fastify-mongodb'), {
+require('dotenv').config();
+const envToLogger = {
+  development: {
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        translateTime: 'HH:MM:ss Z',
+        ignore: 'pid,hostname',
+      },
+    },
+  },
+  production: true,
+};
+const fastify = require('fastify')({
+  logger: envToLogger[process.env.environment] ?? true,
+});
+fastify.register(require('@fastify/mongodb'), {
   forceClose: true,
   url: process.env.DB,
 });
-fastify.register(require('middie'));
-fastify.register(require('./routes/employees'));
-fastify.register(require('./routes/departments'));
 
-fastify.listen(3000, (err, address) => {
+fastify.register(require('./routes/employees'), { prefix: '/api' });
+fastify.register(require('./routes/departments'), { prefix: '/api' });
+
+const serverOptions = {
+  port: 3000,
+};
+fastify.listen(serverOptions, (err) => {
   if (err) {
     fastify.log.error(err);
     process.exit(1);
   }
-  fastify.log.info(`server listening on ${address}`);
 });

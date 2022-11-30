@@ -21,6 +21,7 @@ async function run() {
     const expiresIn = 60;
     const token = jwt.sign(payload, secret, { expiresIn });
     console.log(token);
+    process.exit(1);
   } else {
     console.log('Unsuccessful authentication');
   }
